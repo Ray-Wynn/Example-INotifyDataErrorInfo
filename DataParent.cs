@@ -18,20 +18,26 @@ namespace Example_INotifyDataErrorInfo
     public class DataItem : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
+        /// <summary>
+        /// Notifies property binding of property change
+        /// </summary>
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
+        { // Raise PropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
         #region INotifyDataErrorInfo
+        /// <summary>
+        /// Notifies property binding of property errors
+        /// </summary>
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         protected void OnErrorsChanged([CallerMemberName] string propertyName = "")
         {
-            OnPropertyChanged(nameof(HasErrors));
+            OnPropertyChanged(nameof(HasErrors)); // Update HasErrors
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 

@@ -120,12 +120,10 @@ namespace Example_INotifyDataErrorInfo
         {
             ClearErrors(nameof(ChildNumber));
 
-            if (ChildNumber <= -1)
+            if (ChildNumber <= 0)
             {
                 AddError(nameof(ChildNumber), "Child number must be > 0");
             }
-        }
-
-        
+        }        
     }
 }
