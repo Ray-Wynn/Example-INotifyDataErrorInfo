@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Class="Example_INotifyDataErrorInfo.MainWindow"
         mc:Ignorable="d"
-        Title="INotifyDataErrorInfo" Height="450" Width="800">
+        Title="Example INotifyDataErrorInfo" SizeToContent="WidthAndHeight">
     <Window.Resources>
+        <!-- ErrorTextBox adds to ToolTip ErrorContent -->
         <Style x:Key="ErrorTextBox"
                    BasedOn="{StaticResource {x:Type TextBox}}"
                    TargetType="{x:Type TextBox}">
@@ -17,8 +18,10 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid>
+    
+    <Grid MinWidth="200" Margin="4">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
@@ -29,11 +32,14 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Example INotifyDataErrorInfo" FontWeight="Bold" HorizontalAlignment="Center"/>
         <!-- Products -->
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Products" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <DataGrid Name="DataGridProducts" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Text="Products" FontWeight="Bold" HorizontalAlignment="Center"/>
+        
+        <DataGrid Name="DataGridProducts" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn  Header="Product" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
@@ -49,26 +55,29 @@
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn  Header="Stock" MinWidth="100" Width="auto">
-                    <DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Stock,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Stock}"/>
+                            <TextBox Text="{Binding Stock, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <TextBlock Grid.Column="0" Grid.Row="3" Text="Product" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Grid.Column="0" Grid.Row="4" Text="Stock" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="4" 
-                 Style="{StaticResource ErrorTextBox}"
-                 Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
+        
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="Product" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        <TextBox Grid.Column="1" Grid.Row="4" Style="{StaticResource ErrorTextBox}" Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <TextBlock Grid.Column="0" Grid.Row="5" Text="Stock" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        <TextBox Grid.Column="1" Grid.Row="5" Style="{StaticResource ErrorTextBox}" Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Column="2" Grid.Row="1" Text="Data Raw View" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding}"/>
     </Grid>
 </Window>

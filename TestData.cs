@@ -20,6 +20,11 @@ namespace Example_INotifyDataErrorInfo
                     Product = "Product" + i,
                     Stock = i,                   
                 };
+
+                if(i == 1)
+                {
+                    dataItem.Product = null;
+                }
                 
                 dataItems.Add(dataItem);
             }

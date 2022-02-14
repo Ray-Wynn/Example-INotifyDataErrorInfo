@@ -82,25 +82,22 @@ namespace Example_INotifyDataErrorInfo
         }
         #endregion
 
-        internal struct Products
-        {
+        internal struct Inventory
+        { // Boilerplate ready to implement IEditableObject interface if required
             internal string Product { get; set; }
-            internal int Stock { get; set; }           
+            internal int Stock { get; set; }         
         }
 
-        Products current;
+        Inventory current;
 
         public string Product
         {
             get { return current.Product; }
             set
-            {
-                if (current.Product != value)
-                {
-                    current.Product = value;
-                    ValidateProduct();
-                    OnPropertyChanged();
-                }
+            {       
+                current.Product = value;
+                ValidateProduct();
+                OnPropertyChanged();             
             }
         }
 
@@ -118,13 +115,10 @@ namespace Example_INotifyDataErrorInfo
         {
             get { return current.Stock; }
             set
-            {
-                if (current.Stock != value)
-                {
-                    current.Stock = value;
-                    ValidateStock();
-                    OnErrorsChanged();
-                }
+            {               
+                current.Stock = value;
+                ValidateStock();
+                OnErrorsChanged();             
             }
         }
 
@@ -132,9 +126,9 @@ namespace Example_INotifyDataErrorInfo
         {
             ClearErrors(nameof(Stock));
 
-            if (Stock < 0)
+            if(Stock <= 0)        
             {
-                AddError(nameof(Stock), "Stock error!");
+                AddError(nameof(Stock), "Stock <= 0 !");
             }
         }
     }
