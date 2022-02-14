@@ -23,7 +23,7 @@ namespace Example_INotifyDataErrorInfo
 
                 if(i == 1)
                 {
-                    dataItem.Product = null;
+                    dataItem.Product = "";
                 }
                 
                 dataItems.Add(dataItem);

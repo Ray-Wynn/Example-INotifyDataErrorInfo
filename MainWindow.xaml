@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Class="Example_INotifyDataErrorInfo.MainWindow"
+        x:Class="Example_INotifyDataErrorInfo.MainWindow"
+        xmlns:local="clr-namespace:Example_INotifyDataErrorInfo"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance local:DataProducts}"
         Title="Example INotifyDataErrorInfo" SizeToContent="WidthAndHeight">
+    
     <Window.Resources>
         <!-- ErrorTextBox adds to ToolTip ErrorContent -->
         <Style x:Key="ErrorTextBox"
@@ -41,6 +44,7 @@
         
         <DataGrid Name="DataGridProducts" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
             <DataGrid.Columns>
+                <!-- Product -->
                 <DataGridTemplateColumn  Header="Product" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -49,15 +53,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Product, UpdateSourceTrigger=PropertyChanged}"  />
+                            <TextBox Text="{Binding Product, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-
+                <!-- Stock -->
                 <DataGridTemplateColumn  Header="Stock" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Stock,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Stock,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
