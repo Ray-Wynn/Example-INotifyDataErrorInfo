@@ -70,13 +70,32 @@ namespace Example_INotifyDataErrorInfo
         }
         #endregion
 
+        public DataChildren(DataProduct parent)
+        {
+            Parent = parent;
+        }
+
         internal struct Child
         {
+            internal DataProduct Parent {get; set; }
             internal string ChildName { get; set; }
-            internal int ChildNumber { get; set; }
+            internal int ChildAge { get; set; }
         }
 
         Child current;
+
+        public DataProduct Parent
+        {
+            get { return current.Parent; }
+            set
+            {
+                if(current.Parent != value)
+                {
+                    current.Parent = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string ChildName
         {
@@ -102,27 +121,27 @@ namespace Example_INotifyDataErrorInfo
             }
         }
 
-        public int ChildNumber
+        public int ChildAge
         {
-            get { return current.ChildNumber; }
+            get { return current.ChildAge; }
             set
             {
-                if (current.ChildNumber != value)
+                if (current.ChildAge != value)
                 {
-                    current.ChildNumber = value;
-                    ValidateChildNumber();
+                    current.ChildAge = value;
+                    ValidateChildAge();
                     OnPropertyChanged();
                 }
             }
         }
 
-        private void ValidateChildNumber()
+        private void ValidateChildAge()
         {
-            ClearErrors(nameof(ChildNumber));
+            ClearErrors(nameof(ChildAge));
 
-            if (ChildNumber <= 0)
+            if (ChildAge > Parent.ProductPrice - 16)
             {
-                AddError(nameof(ChildNumber), "Child number must be > 0");
+                AddError(nameof(ChildAge), "Child's age must be greater than parent's");
             }
         }        
     }

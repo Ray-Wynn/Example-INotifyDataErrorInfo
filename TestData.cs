@@ -9,41 +9,22 @@ namespace Example_INotifyDataErrorInfo
 {
     public static class TestData
     {
-        public static DataItems CreateDataItems(int parent, int children)
+        public static DataProducts CreateDataItems(int products)
         {
-            DataItems dataItems = new();
+            DataProducts dataItems = new();
 
-            for (int i = 0; i < parent; i++)
+            for (int i = 0; i < products; i++)
             {
-                DataItem dataItem = new()
+                DataProduct dataItem = new()
                 {
-                    ParentName = "Parent" + i,
-                    ParentNumber = i,
-                    Children = CreateChildren(children)
+                    Product = "Product" + i,
+                    Stock = i,                   
                 };
-
+                
                 dataItems.Add(dataItem);
             }
 
             return dataItems;
-        }
-
-        public static ObservableCollection<DataChildren> CreateChildren(int children)
-        {
-            ObservableCollection<DataChildren> Children = new();
-
-            for (int i = 1; i <= children; i++)
-            {
-                DataChildren dataChildren = new()
-                {
-                    ChildName = "ChildName" + i,
-                    ChildNumber = i,
-                };
-
-                Children.Add(dataChildren);
-            }
-
-            return Children;
         }
     }
 }

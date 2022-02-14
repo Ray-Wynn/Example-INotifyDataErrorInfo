@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Example_INotifyDataErrorInfo
 {
-    public class DataItems : ObservableCollection<DataItem>
+    public class DataProducts : ObservableCollection<DataProduct>
     {
 
     }
 
-    public class DataItem : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class DataProduct : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
         /// <summary>
@@ -82,92 +82,59 @@ namespace Example_INotifyDataErrorInfo
         }
         #endregion
 
-        internal struct Parent
+        internal struct Products
         {
-            internal string ParentName { get; set; }
-            internal int ParentNumber { get; set; }
-            internal ObservableCollection<DataChildren> Children { get; set; }
+            internal string Product { get; set; }
+            internal int Stock { get; set; }           
         }
 
-        Parent current;
+        Products current;
 
-        public string ParentName
+        public string Product
         {
-            get { return current.ParentName; }
+            get { return current.Product; }
             set
             {
-                if (current.ParentName != value)
+                if (current.Product != value)
                 {
-                    current.ParentName = value;
-                    ValidateParentName();
+                    current.Product = value;
+                    ValidateProduct();
                     OnPropertyChanged();
                 }
             }
         }
 
-        private void ValidateParentName()
+        private void ValidateProduct()
         {
-            ClearErrors(nameof(ParentName));
+            ClearErrors(nameof(Product));
 
-            if (string.IsNullOrEmpty(ParentName))
+            if (string.IsNullOrEmpty(Product))
             {
-                AddError(nameof(ParentName), "Parent name cannot be empty");
+                AddError(nameof(Product), "Product name required");
             }
         }
 
-        public int ParentNumber
+        public int Stock
         {
-            get { return current.ParentNumber; }
+            get { return current.Stock; }
             set
             {
-                if (current.ParentNumber != value)
+                if (current.Stock != value)
                 {
-                    current.ParentNumber = value;
-                    ValidateParentNumber();
+                    current.Stock = value;
+                    ValidateStock();
                     OnErrorsChanged();
                 }
             }
         }
 
-        private void ValidateParentNumber()
+        private void ValidateStock()
         {
-            ClearErrors(nameof(ParentNumber));
+            ClearErrors(nameof(Stock));
 
-            if (ParentNumber <= 0)
+            if (Stock < 0)
             {
-                AddError(nameof(ParentNumber), "Child number must be > 0");
-            }
-        }
-
-        public ObservableCollection<DataChildren> Children
-        {
-            get { return current.Children; }
-            set
-            {
-                if (current.Children != value)
-                {
-                    current.Children = value;
-                    ValidateChildren();
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private void ValidateChildren()
-        {
-            foreach (var child in Children)
-            {
-                ClearErrors(nameof(child.ChildName));
-
-                if (string.IsNullOrEmpty(child.ChildName))
-                {
-                    AddError(nameof(child.ChildName), "Child name cannot be empty");
-                }
-
-                if (child.ChildNumber <= 0)
-                {
-                    AddError(nameof(child.ChildNumber), "Child number must be > 0");
-                }
+                AddError(nameof(Stock), "Stock error!");
             }
         }
     }

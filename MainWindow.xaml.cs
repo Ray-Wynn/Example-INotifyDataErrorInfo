@@ -19,21 +19,12 @@ namespace Example_INotifyDataErrorInfo
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        DataItems dataItems;
-
+    {        
         public MainWindow()
         {
             InitializeComponent();
 
-            dataItems = TestData.CreateDataItems(4, 4);
-            DataGridParent.ItemsSource = dataItems;
-        }
-
-        private void ToggleDataContext_Click(object sender, RoutedEventArgs e)
-        {
-            DataGridParent.ItemsSource = null;
-            DataGridParent.ItemsSource = dataItems;
+            DataContext = TestData.CreateDataItems(4);            
         }
     }
 }

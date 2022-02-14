@@ -1,17 +1,26 @@
-﻿<Window x:Class="Example_INotifyDataErrorInfo.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Example_INotifyDataErrorInfo"
+    x:Class="Example_INotifyDataErrorInfo.MainWindow"
         mc:Ignorable="d"
         Title="INotifyDataErrorInfo" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="ErrorTextBox"
+                   BasedOn="{StaticResource {x:Type TextBox}}"
+                   TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -20,36 +29,46 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Parents" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <DataGrid x:Name="DataGridParent" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
-        <Button x:Name="ToggleDataContext" Grid.Column="2" Grid.Row="1" Content="Toggle Data Context" Click="ToggleDataContext_Click"/>
+        <!-- Products -->
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Products" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <DataGrid Name="DataGridProducts" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn  Header="Product" MinWidth="100" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Product,  UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Product, UpdateSourceTrigger=PropertyChanged}"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
 
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="Parent Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <TextBlock Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" Text="HasError is "/>
-        <TextBlock Grid.Column="0" Grid.Row="3" Text="Parent Name" FontWeight="Bold" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.ParentName, ElementName=DataGridParent}"/>
-
-        <TextBlock Grid.Column="0" Grid.Row="4" Text="Parent Number" FontWeight="Bold" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding SelectedItem.ParentNumber, ElementName=DataGridParent}"/>
-
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Text="Children" FontWeight="Bold" HorizontalAlignment="Center"/>
-
-        <DataGrid x:Name="DataGridChildren" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"
-                  ItemsSource="{Binding SelectedItem.Children, ElementName=DataGridParent}"/>
-
-        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Text="Child Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
-
-        <TextBlock Grid.Column="0" Grid.Row="8" Text="Child Name" FontWeight="Bold" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding SelectedItem.ChildName, ElementName=DataGridChildren}"/>
-
-        <TextBlock Grid.Column="0" Grid.Row="9" Text="Child Number" FontWeight="Bold" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding SelectedItem.ChildNumber, ElementName=DataGridChildren}"/>
+                <DataGridTemplateColumn  Header="Stock" MinWidth="100" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Style="{StaticResource ResourceKey=ErrorTextBox}" Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Stock}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="0" Grid.Row="3" Text="Product" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="Stock" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        <TextBox Grid.Column="1" Grid.Row="4" 
+                 Style="{StaticResource ErrorTextBox}"
+                 Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
