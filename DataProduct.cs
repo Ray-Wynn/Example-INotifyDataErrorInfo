@@ -36,10 +36,9 @@ namespace Example_INotifyDataErrorInfo
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         protected void OnErrorsChanged([CallerMemberName] string propertyName = "")
-        {            
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.
-            // HasErrors changed following ErrorsChanged on the assumption that HasError woudld be used as a xaml data trigger?
+        {
+            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.  
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));                      
         }
 
         private readonly Dictionary<string, List<string>> errorsByPropertyName = new();        
@@ -119,15 +118,15 @@ namespace Example_INotifyDataErrorInfo
             {               
                 current.Stock = value;
                 ValidateStock();
-                OnErrorsChanged();             
+                OnPropertyChanged();             
             }
         }
 
         private void ValidateStock()
         {
             ClearErrors(nameof(Stock));
-
-            if(Stock <= 0)        
+            
+            if (Stock <= 0)        
             {
                 AddError(nameof(Stock), "Stock <= 0 !");
             }

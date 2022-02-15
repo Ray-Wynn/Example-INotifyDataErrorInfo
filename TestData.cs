@@ -18,7 +18,7 @@ namespace Example_INotifyDataErrorInfo
                 DataProduct dataItem = new()
                 {
                     Product = "Product" + i,
-                    Stock = i,                   
+                    Stock = i,                                       
                 };
 
                 if(i == 1)
