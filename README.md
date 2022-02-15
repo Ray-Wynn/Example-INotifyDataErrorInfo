@@ -10,3 +10,6 @@ This interface also supports custom error objects, multiple errors per property,
 Cross-property errors are errors that affect multiple properties. 
 You can associate these errors with one or all of the affected properties, or you can treat them as entity-level errors. 
 Entity-level errors are errors that either affect multiple properties or affect the entire entity without affecting a particular property.
+
+ValidatesOnNotifyDataErrors
+	When ValidatesOnNotifyDataErrors is true, the binding checks for and reports errors that are raised by a data source that implements INotifyDataErrorInfo.

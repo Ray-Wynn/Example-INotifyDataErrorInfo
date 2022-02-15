@@ -8,7 +8,17 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:DataProducts}"
         Title="Example INotifyDataErrorInfo" SizeToContent="WidthAndHeight">
-
+    
+    <Window.Resources>
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
     <Grid MinWidth="200" Margin="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -35,7 +45,7 @@
                 <DataGridTemplateColumn  Header="Product" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=Product, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <TextBox Text="{Binding Path=Product, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Style="{StaticResource TextBoxInError}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -43,18 +53,18 @@
                 <DataGridTemplateColumn  Header="Stock" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <TextBox Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Style="{StaticResource TextBoxInError}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-
+            <!-- Exclamation mark -->
             <DataGrid.RowValidationErrorTemplate>
                 <ControlTemplate>
                     <Grid x:Name="ErrorIcon" Margin="0,-2,0,-2" Background="{TemplateBinding Background}" Width="auto">
                         <!-- Create a yellow exclamation inside a red circle that scales to the available height. -->
                         <Viewbox Stretch="Uniform" HorizontalAlignment="Center">
-                            <Grid Width="auto" ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}">
+                            <Grid Width="auto" ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)/ErrorContent}">
                                 <Ellipse Width="{TemplateBinding ActualHeight}" Height="{TemplateBinding ActualHeight}" MaxHeight="36" MaxWidth="40" Fill="Red" StrokeThickness="2" Stroke="Yellow" VerticalAlignment="Center"/>
                                 <Viewbox Stretch="Uniform">
                                     <TextBlock Text="!" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow"/>
@@ -64,27 +74,31 @@
                     </Grid>
                 </ControlTemplate>
             </DataGrid.RowValidationErrorTemplate>
-
+           
             <!-- Errors displayed below the offending DataGrid row. -->
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <TextBlock Padding="4,0,4,2" x:Name="RowDetailsError" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}" Background="Red" Foreground="White"/>
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors).Count}" Value="0">
-                            <Setter TargetName="RowDetailsError" Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
+                    <StackPanel>
+                        <AdornedElementPlaceholder x:Name="textBox" />
+                        <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ErrorContent}" Foreground="Red" Padding="4,0,4,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
         
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
-        
+
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Product" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-        
+        <TextBox x:Name="textBox" Grid.Column="1" Grid.Row="4" Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+
         <TextBlock Grid.Column="0" Grid.Row="5" Text="Stock" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
 
         <TextBlock Grid.Column="2" Grid.Row="1" Text="Data Raw View" FontWeight="Bold" HorizontalAlignment="Center"/>
         <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding}"/>
