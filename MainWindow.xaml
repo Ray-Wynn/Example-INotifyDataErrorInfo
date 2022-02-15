@@ -71,6 +71,37 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
+
+            <DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid x:Name="ErrorIcon" Margin="0,-2,0,-2" Background="{TemplateBinding Background}" Width="auto">
+                        <!-- Create a yellow exclamation inside a red circle that scales to the available height. -->
+                        <Viewbox Stretch="Uniform" HorizontalAlignment="Center">
+                            <Grid Width="auto"
+                                ToolTip="{Binding RelativeSource={RelativeSource
+                                FindAncestor, AncestorType={x:Type DataGridRow}},
+                                Path=(Validation.Errors)[0].ErrorContent}">
+                                <Ellipse Width="{TemplateBinding ActualHeight}" Height="{TemplateBinding ActualHeight}" MaxHeight="36" MaxWidth="40" Fill="Red" StrokeThickness="2" Stroke="Yellow" VerticalAlignment="Center"/>
+                                <Viewbox Stretch="Uniform">
+                                    <TextBlock Text="!" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow"/>
+                                </Viewbox>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>
+
+            <!-- Errors displayed below the offending DataGrid row. -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <TextBlock Padding="4,0,4,2" x:Name="RowDetailsError" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}" Background="Red" Foreground="White"/>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors).Count}" Value="0">
+                            <Setter TargetName="RowDetailsError" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
         </DataGrid>
         
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>

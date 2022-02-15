@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -36,12 +37,13 @@ namespace Example_INotifyDataErrorInfo
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         protected void OnErrorsChanged([CallerMemberName] string propertyName = "")
-        {
-            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.  
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));                      
+        {            
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.
+            Debug.WriteLine("Property {0} Errors={1}", propertyName, errorsByPropertyName.Count);
         }
 
-        private readonly Dictionary<string, List<string>> errorsByPropertyName = new();        
+        private Dictionary<string, List<string>> errorsByPropertyName = new();        
 
         public bool HasErrors
         {
@@ -52,7 +54,8 @@ namespace Example_INotifyDataErrorInfo
         {
             if (propertyName != null && errorsByPropertyName.ContainsKey(propertyName))
             {
-                return errorsByPropertyName[propertyName];
+                IEnumerable errors = errorsByPropertyName[propertyName];
+                return errors;
             }
 
             return new List<string>();
@@ -107,7 +110,8 @@ namespace Example_INotifyDataErrorInfo
 
             if (string.IsNullOrEmpty(Product))
             {
-                AddError(nameof(Product), "Product name required");
+                AddError(nameof(Product), "Product name required.");
+                AddError(nameof(Product), "Product Error multiple message.");
             }
         }
 
