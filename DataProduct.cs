@@ -16,6 +16,9 @@ namespace Example_INotifyDataErrorInfo
 
     }
 
+    /// <summary>
+    /// Code derived from https://kmatyaszek.github.io/wpf%20validation/2019/03/13/wpf-validation-using-inotifydataerrorinfo.html
+    /// </summary>
     public class DataProduct : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         #region INotifyPropertyChanged
@@ -39,8 +42,7 @@ namespace Example_INotifyDataErrorInfo
         protected void OnErrorsChanged([CallerMemberName] string propertyName = "")
         {            
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.
-            Debug.WriteLine("Property {0} Errors={1}", propertyName, errorsByPropertyName.Count);
+            OnPropertyChanged(nameof(HasErrors)); // Make HasErrors binding current.            
         }
 
         private Dictionary<string, List<string>> errorsByPropertyName = new();        

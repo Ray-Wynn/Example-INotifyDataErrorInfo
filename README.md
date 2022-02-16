@@ -16,29 +16,29 @@ ValidatesOnNotifyDataErrors
 
 Code derived from https://kmatyaszek.github.io/wpf%20validation/2019/03/13/wpf-validation-using-inotifydataerrorinfo.html
 
-And below snippet of code shows you how you can show to user multiple errors to single property: unfortunately this smears across controls below.
-kmatyaszek
-    <TextBox Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
-        <Validation.ErrorTemplate>
-            <ControlTemplate>
-                <StackPanel>
-                    <AdornedElementPlaceholder x:Name="textBox" />
-                    <ItemsControl ItemsSource="{Binding}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ErrorContent}" Foreground="Red" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </ControlTemplate>
-        </Validation.ErrorTemplate>
-    </TextBox>
+<Window.Resources>
+        <!-- Textbox Validation Style
+                Tooltip single validation error reporting -->
+        <Style x:Key="Example-TextBoxValidationError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- DataGrid.RowValidationErrorTemplate
+                Display yellow exclamation mark within a red circle on row containing validation errors. -->
+        <ControlTemplate x:Key="Example-RowValidationErrorTemplate">
+            <Grid Margin="0,-2,0,-2">
+                <Ellipse StrokeThickness="0" Fill="Red" Width="{TemplateBinding FontSize}" Height="{TemplateBinding FontSize}" />
+                <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" FontWeight="Bold" Foreground="Yellow" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+        </ControlTemplate>
 
-Derived code to display multiple errors in <DataGrid.RowDetailsTemplate>
-
-    <DataGrid.RowDetailsTemplate>
-        <DataTemplate>
+        <!-- DataGrid.RowDetailsTemplate
+                Display one or more row validation errors in RowDetails when row is selected. -->
+        <DataTemplate x:Key="Example-RowDetailsTemplate">
             <StackPanel>
                 <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)}">
                     <ItemsControl.ItemTemplate>
@@ -49,4 +49,4 @@ Derived code to display multiple errors in <DataGrid.RowDetailsTemplate>
                 </ItemsControl>
             </StackPanel>
         </DataTemplate>
-    </DataGrid.RowDetailsTemplate>
+    </Window.Resources>
