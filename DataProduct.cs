@@ -111,11 +111,11 @@ namespace Example_INotifyDataErrorInfo
             if (string.IsNullOrEmpty(Product))
             {
                 AddError(nameof(Product), "Product name required.");               
-                AddError(nameof(Product), "Demo multiple message.");
+                AddError(nameof(Product), "Demo additional product message.");
             }
             if(Product.Length < 3)
             {
-                AddError(nameof(Product), "Product name < 3 characters long");
+                AddError(nameof(Product), "Product name < 3 characters long.");
             }
         }
 
