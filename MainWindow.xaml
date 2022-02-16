@@ -101,6 +101,6 @@
 
         <!-- Provide a raw DataGrid view of the data -->
         <TextBlock Grid.Column="2" Grid.Row="1" Text="Data Raw View" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding}"/>
+        <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding Mode=OneWay}"/>
     </Grid>
 </Window>
