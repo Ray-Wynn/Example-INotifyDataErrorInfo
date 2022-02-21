@@ -31,21 +31,19 @@
         </ControlTemplate>
 
         <!-- DataGrid.RowDetailsTemplate
-                Display one or more row validation errors in RowDetails when row is selected. -->
-        <DataTemplate x:Key="Example-RowDetailsTemplate">
-            <StackPanel>
-                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ErrorContent}" Foreground="Red" Padding="4,0,4,2"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                Display row validation errors in RowDetails when row is selected.-->
+        <DataTemplate x:Key="ShowValidationErrorsInItemsControl">
+            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding ErrorContent}" Foreground="Red" Padding="4,0,4,2"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </DataTemplate>
     </Window.Resources>
     
-    <Grid MinWidth="200" Margin="4">
+    <Grid MinWidth="200" Margin="4" Validation.Error="Validation_Error">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
@@ -53,6 +51,9 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -67,13 +68,22 @@
 
         <DataGrid Name="DataGridProducts" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding}" 
                   RowValidationErrorTemplate="{StaticResource Example-RowValidationErrorTemplate}"
-                  RowDetailsTemplate="{StaticResource Example-RowDetailsTemplate}">
+                  RowDetailsTemplate="{StaticResource ShowValidationErrorsInItemsControl}">
             <DataGrid.Columns>
                 <!-- Product -->
                 <DataGridTemplateColumn  Header="Product" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=Product, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <!-- 
+                                UpdateSourceTrigger         Gets or sets a value that determines the timing of binding source updates.
+                                ValidatesOnNotifyDataErrors Gets or sets a value that indicates whether to include the NotifyDataErrorValidationRule.
+                                NotifyOnValidationError     Gets or sets a value that indicates whether to raise the Error attached event on the bound object.
+                            -->
+                            <TextBox Text="{Binding Path=Product, UpdateSourceTrigger=PropertyChanged, 
+                                ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True,
+                                NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                                SourceUpdated="TextBox_SourceUpdated"
+                                TargetUpdated="TextBox_TargetUpdated"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -81,7 +91,11 @@
                 <DataGridTemplateColumn  Header="Stock" MinWidth="100" Width="auto">
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <TextBox Text="{Binding Path=Stock, UpdateSourceTrigger=PropertyChanged, 
+                                ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True,
+                                NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                                SourceUpdated="TextBox_SourceUpdated"
+                                TargetUpdated="TextBox_TargetUpdated"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -92,15 +106,24 @@
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Text="Product Selection" FontWeight="Bold" HorizontalAlignment="Center"/>
         <!-- Product -->
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Product" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="4" Style="{StaticResource Example-TextBoxValidationError}"
+        <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" Style="{StaticResource Example-TextBoxValidationError}"
                  Text="{Binding SelectedItem.Product, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
         <!-- Stock -->
         <TextBlock Grid.Column="0" Grid.Row="5" Text="Stock" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-        <TextBox Grid.Column="1" Grid.Row="5" Style="{StaticResource Example-TextBoxValidationError}"
+        <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" Style="{StaticResource Example-TextBoxValidationError}"
                  Text="{Binding SelectedItem.Stock, ElementName=DataGridProducts, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+        <!-- ValidationError -->
+        <TextBlock Grid.Column="0" Grid.Row="6" Text="Validation.Error event" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+        <ListBox x:Name="ValidationErrorListBox" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" Foreground="Blue" />
 
+        <TextBlock Grid.Column="0" Grid.Row="7" Text="SourceUpdated" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0" ToolTip="Only listening to DataGrid column events!"/>
+        <TextBlock x:Name="SourceUpdatedTextBlock" Grid.Column="1" Grid.Row="7" Foreground="Violet" ToolTip="Only listening to DataGrid column events!"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="8" Text="TargetUpdated" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,4,0" ToolTip="Only listening to DataGrid column events!"/>
+        <TextBlock x:Name="TargetUpdatedTextBlock" Grid.Column="1" Grid.Row="8" Foreground="Violet" ToolTip="Only listening to DataGrid column events!"/>
+        
         <!-- Provide a raw DataGrid view of the data -->
         <TextBlock Grid.Column="2" Grid.Row="1" Text="Data Raw View" FontWeight="Bold" HorizontalAlignment="Center"/>
-        <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding}"/>
+        <DataGrid x:Name="RawViewDataGrid" Grid.Column="2" Grid.Row="2"  ItemsSource="{Binding}"/>
     </Grid>
 </Window>
