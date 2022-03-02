@@ -36,7 +36,7 @@ Then a properties set calls OnPropertyChanged() to update the WPF view.
 	    {
 		    current.Product = value;
 		  
-Then the proprties validation is performed.
+Then the properties validation is performed.
 		  
 		    ValidateProduct();
 		    OnPropertyChanged();                
