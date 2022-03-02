@@ -20,8 +20,7 @@ The following structure implementation makes later additions to the data class, 
 By declaring the structure and fields as internal hides the complexity and distraction.
 
 	internal struct Inventory
-	{ 
-        internal bool HasErrors{ get; set; }
+	{         
 	    internal string Product { get; set; }
 	    internal int Stock { get; set; }         
 	}
@@ -36,9 +35,29 @@ Then a properties set calls OnPropertyChanged() to update the WPF view.
 	    set
 	    {
 		    current.Product = value;
+		  
+Then the proprties validation is performed.
+		  
+		    ValidateProduct();
 		    OnPropertyChanged();                
 	    }
 	}
+	
+	private void ValidateProduct()
+        {
+            ClearErrors(nameof(Product));
+
+            if (string.IsNullOrEmpty(Product))
+            {
+                AddError(nameof(Product), "Product name required.");               
+                AddError(nameof(Product), "Demo additional product message.");
+            }
+
+            if(Product.Length < 3)
+            {
+                AddError(nameof(Product), "Product name < 3 characters long.");
+            }
+        }
 
 ## INotifyDataErrorInfo Implementation
 This interface enables data entity classes to implement custom validation rules and expose validation results asynchronously.
@@ -105,36 +124,3 @@ In this case, calling PropertyChanged keeps the bonding current.*
                 OnErrorsChanged(propertyName);
             }
         }
-        
-## Data property validation
-
-The following shows the Product property implementation and validation.
-
-        public string Product
-        {
-            get { return current.Product; }
-            set
-            {       
-                current.Product = value;
-                ValidateProduct();
-                OnPropertyChanged();             
-            }
-        }
-
-        private void ValidateProduct()
-        {
-            ClearErrors(nameof(Product));
-
-            if (string.IsNullOrEmpty(Product))
-            {
-                AddError(nameof(Product), "Product name required.");               
-                AddError(nameof(Product), "Demo additional product message.");
-            }
-
-            if(Product.Length < 3)
-            {
-                AddError(nameof(Product), "Product name < 3 characters long.");
-            }
-        }
-
-
