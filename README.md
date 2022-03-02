@@ -85,11 +85,12 @@ In this case, calling PropertyChanged keeps the bonding current.*
         public bool HasErrors
         {
             get { return errorsByPropertyName.Count > 0; }
-        }
-
-        private Dictionary<string, List<string>> errorsByPropertyName = new();  
+        }         
 
 **GetErrors** Gets the validation errors for a specified property or for the entire entity.
+The dictionary errorsByPropertyName holds the reported errors by property name.
+
+	private Dictionary<string, List<string>> errorsByPropertyName = new(); 
 
         public IEnumerable GetErrors(string? propertyName)
         {
